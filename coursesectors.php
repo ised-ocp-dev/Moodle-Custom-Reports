@@ -23,10 +23,12 @@ $PAGE->set_heading($title);
 
 
 
-//echo $OUTPUT->header();
-
-header("Content-Type: text/csv");
-header("Content-Disposition: attachment; filename=file.csv");
+if($_GET['debug'] == "true"){
+	echo $OUTPUT->header();
+}else{
+	header("Content-Type: text/csv");
+	header("Content-Disposition: attachment; filename=file.csv");
+}
 
 // -------------
 //
@@ -49,7 +51,10 @@ foreach($dropdown_values_sector_INDEXES as $dropdown_values_sector_INDEX){
 	
 	array_push($dropdown_values_sector_INDEXES_cleaned, $new_value);
 }
-//var_dump($dropdown_values_sector_INDEXES_cleaned);
+if($_GET['debug'] == "true"){
+	var_dump("DROP DOWN VALUES FOR SECTOR");
+	var_dump($dropdown_values_sector_INDEXES_cleaned);
+}
 
 
 
@@ -74,7 +79,10 @@ foreach($dropdown_values_status_INDEXES as $dropdown_values_status_INDEX){
 	
 	array_push($dropdown_values_status_INDEXES_cleaned, $new_value);
 }
-//var_dump($dropdown_values_status_INDEXES_cleaned);
+if($_GET['debug'] == "true"){
+	var_dump("DROP DOWN VALUES FOR STATUS");
+	var_dump($dropdown_values_status_INDEXES_cleaned);
+}
 
 
 
@@ -112,7 +120,7 @@ foreach($courses as $course){
 		$course_status_has_value = $dropdown_values_status_INDEXES_cleaned[$course_fields->intvalue];
 	}
 	
-	echo $course_fullname_clean .",". $course_status_has_value .",". $course_sector_has_value .",". $CFG->wwwroot."/course/view.php?id=".$course->id .",". $CFG->wwwroot."./course/edit.php?id=".$course->id ;	
+	echo $course_fullname_clean .",". $course_status_has_value .",". $course_sector_has_value .",". $CFG->wwwroot."/course/view.php?id=".$course->id .",". $CFG->wwwroot."/course/edit.php?id=".$course->id ;	
 	echo "\n";
 	
 }
@@ -121,5 +129,6 @@ foreach($courses as $course){
 				
 
 
-
-//echo $OUTPUT->footer();
+if($_GET['debug'] == "true"){
+	echo $OUTPUT->footer();
+}
