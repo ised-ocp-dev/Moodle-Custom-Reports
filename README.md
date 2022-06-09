@@ -1,1 +1,1 @@
-# CustomReports
+# Moodle-Custom-Reports
