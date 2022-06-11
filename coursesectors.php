@@ -41,6 +41,8 @@ $dropdown_values_sector = $DB->get_record_sql("SELECT * FROM {customfield_field}
 $dropdown_values_sector_INDEXES = (explode(PHP_EOL, json_decode($dropdown_values_sector->configdata)->options));
 $dropdown_values_sector_INDEXES_cleaned = [];
 
+$field_id_sector = $dropdown_values_sector->id;
+
 foreach($dropdown_values_sector_INDEXES as $dropdown_values_sector_INDEX){
 	
 	// CLEAN MLANG
@@ -69,6 +71,8 @@ $dropdown_values_status = $DB->get_record_sql("SELECT * FROM {customfield_field}
 $dropdown_values_status_INDEXES = (explode(PHP_EOL, json_decode($dropdown_values_status->configdata)->options));
 $dropdown_values_status_INDEXES_cleaned = [];
 
+$field_id_status = $dropdown_values_status->id;
+
 foreach($dropdown_values_status_INDEXES as $dropdown_values_status_INDEX){
 	
 	// CLEAN MLANG
@@ -84,6 +88,13 @@ if($_GET['debug'] == "true"){
 	var_dump($dropdown_values_status_INDEXES_cleaned);
 }
 
+
+if($_GET['debug'] == "true"){
+	echo "<hr />";echo "<hr />";echo "<hr />";
+	var_dump($field_id_status);
+	var_dump($field_id_sector);
+	echo "<hr />";echo "<hr />";echo "<hr />";
+}
 
 
 // -------------
@@ -104,24 +115,31 @@ foreach($courses as $course){
 	$course_fullname_clean = str_replace("{mlang}{mlang fr}", " / ",$course_fullname_clean);
 	$course_fullname_clean = str_replace("{mlang}", "",$course_fullname_clean);
 	
-	$course_fields = $DB->get_record_sql("SELECT * FROM {customfield_data} WHERE instanceid = ".$course->id);
+	$course_field_status = $DB->get_record_sql("SELECT * FROM {customfield_data} WHERE fieldid = ".$field_id_status." AND instanceid = ".$course->id);
+	$course_field_sector = $DB->get_record_sql("SELECT * FROM {customfield_data} WHERE fieldid = ".$field_id_sector." AND instanceid = ".$course->id);
 	
-	$course_selected_dropdown = $course_fields->intvalue;
-	
-	// SECTOR
-	$course_sector_has_value = "NO SECTOR";
-	if($dropdown_values_sector_INDEXES_cleaned[$course_fields->intvalue]){
-		$course_sector_has_value = $dropdown_values_sector_INDEXES_cleaned[$course_fields->intvalue];
-	}
 	
 	//STATUS
 	$course_status_has_value = "NO STATUS";
-	if($dropdown_values_status_INDEXES_cleaned[$course_fields->intvalue]){
-		$course_status_has_value = $dropdown_values_status_INDEXES_cleaned[$course_fields->intvalue];
+	if($dropdown_values_status_INDEXES_cleaned[$course_field_status->intvalue]  && $course_field_status->fieldid == $field_id_status){
+		$course_status_has_value = $dropdown_values_status_INDEXES_cleaned[$course_field_status->intvalue];
 	}
+	
+	// SECTOR
+	$course_sector_has_value = "NO SECTOR";
+	if($dropdown_values_sector_INDEXES_cleaned[$course_field_sector->intvalue] && $course_field_sector->fieldid == $field_id_sector){
+		$course_sector_has_value = $dropdown_values_sector_INDEXES_cleaned[$course_field_sector->intvalue];
+	}
+	
 	
 	echo $course_fullname_clean .",". $course_status_has_value .",". $course_sector_has_value .",". $CFG->wwwroot."/course/view.php?id=".$course->id .",". $CFG->wwwroot."/course/edit.php?id=".$course->id ;	
 	echo "\n";
+
+	if($_GET['debug'] == "true"){
+		var_dump($course_field_status);
+		var_dump($course_field_sector);
+		echo "<hr />";
+	}
 	
 }
 
