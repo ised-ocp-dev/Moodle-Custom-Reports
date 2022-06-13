@@ -23,12 +23,14 @@ $PAGE->set_heading($title);
 
 
 
-if($_GET['debug'] == "true"){
-	echo $OUTPUT->header();
-}else{
-	header("Content-Type: text/csv");
-	header("Content-Disposition: attachment; filename=file.csv");
-}
+// if($_GET['debug'] == "true"){
+	// echo $OUTPUT->header();
+// }else{
+	// header("Content-Type: text/csv");
+	// header("Content-Disposition: attachment; filename=file.csv");
+// }
+
+echo $OUTPUT->header();
 
 // -------------
 //
@@ -104,7 +106,10 @@ if($_GET['debug'] == "true"){
 //
 //
 // -------------
-echo "COURSE NAME, STATUS, SECTOR, COURSE URL, EDIT COURSE\n";
+
+
+echo "<table border='1'>";
+echo "<tr><th>COURSE NAME</th><th>STATUS</th><th>SECTOR</th><th>COURSE URL</th><th>EDIT COURSE</th></tr>";
 
 $courses = $DB->get_records_sql("SELECT * FROM {course}");
 foreach($courses as $course){
@@ -131,9 +136,9 @@ foreach($courses as $course){
 		$course_sector_has_value = $dropdown_values_sector_INDEXES_cleaned[$course_field_sector->intvalue];
 	}
 	
-	
-	echo $course_fullname_clean .",". $course_status_has_value .",". $course_sector_has_value .",". $CFG->wwwroot."/course/view.php?id=".$course->id .",". $CFG->wwwroot."/course/edit.php?id=".$course->id ;	
-	echo "\n";
+	echo "<tr>";
+	echo "<td>".$course_fullname_clean ."</td><td>". $course_status_has_value ."</td><td>". $course_sector_has_value ."</td><td><a href='". $CFG->wwwroot."/course/view.php?id=".$course->id ."'>View Course</a></td><td><a href='". $CFG->wwwroot."/course/edit.php?id=".$course->id."'>Edit Course Settings</a></td>" ;	
+	echo "</tr>";
 
 	if($_GET['debug'] == "true"){
 		var_dump($course_field_status);
@@ -143,10 +148,14 @@ foreach($courses as $course){
 	
 }
 
+echo "</table>";
+
 //$customfields = $DB->get_record_sql("SELECT * FROM {customfield_data} WHERE id = '".intval($_GET['id'])."'", array(1));
 				
 
 
-if($_GET['debug'] == "true"){
-	echo $OUTPUT->footer();
-}
+// if($_GET['debug'] == "true"){
+	// echo $OUTPUT->footer();
+// }
+
+echo $OUTPUT->footer();
